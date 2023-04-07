@@ -8,7 +8,7 @@ namespace Airline.WebAPI.Dtos
         public int Id { get; set; }
 
         [Required]
-        public string FlightCode { get; set; }
+        public string Code { get; set; }
 
         [Required]
         public decimal Price { get; set; }
