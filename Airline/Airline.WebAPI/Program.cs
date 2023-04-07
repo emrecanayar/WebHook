@@ -1,4 +1,5 @@
 using Airline.WebAPI.Contexts;
+using Airline.WebAPI.MessageBus;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AirlineDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("AirlineConnection")));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddSingleton<IMessageBus, RabbitMQMessageBus>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

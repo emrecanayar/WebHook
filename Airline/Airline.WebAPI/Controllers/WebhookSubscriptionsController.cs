@@ -39,7 +39,7 @@ namespace Airline.WebAPI.Controllers
             {
                 subscription = _mapper.Map<WebhookSubscription>(webhookSubscriptionCreateDto);
                 subscription.Secret = Guid.NewGuid();
-                subscription.WebhookPublisher = "PanAus";
+                subscription.WebhookPublisher = "ThyIst";
                 try
                 {
                     _context.WebhookSubscriptions.Add(subscription);

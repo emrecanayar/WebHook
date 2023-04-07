@@ -1,6 +1,7 @@
 ﻿using Airline.WebAPI.Contexts;
 using Airline.WebAPI.Dtos;
 using Airline.WebAPI.Entities;
+using Airline.WebAPI.MessageBus;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +13,14 @@ namespace Airline.WebAPI.Controllers
     public class FlightsController : ControllerBase
     {
         private readonly AirlineDbContext _context;
+        private readonly IMessageBus _messageBus;
         private readonly IMapper _mapper;
 
-        public FlightsController(AirlineDbContext context, IMapper mapper)
+        public FlightsController(AirlineDbContext context, IMapper mapper, IMessageBus messageBus)
         {
             _context = context;
             _mapper = mapper;
+            _messageBus = messageBus;
         }
 
         //Uçuş koduna göre uçuş bilgilerini getirir.
@@ -78,6 +81,13 @@ namespace Airline.WebAPI.Controllers
 
             _mapper.Map(flightDetailUpdateDto, flight);
             _context.SaveChanges();
+            //Güncellenen fiyat bilgisini subscribe olan uygulamalara publish edelim.
+            _messageBus.Publish(new()
+            {
+                Code = flightDetailUpdateDto.Code,
+                NewPrice = flightDetailUpdateDto.Price,
+                WebhookType = "PriceChange"
+            });
             return NoContent();
         }
     }
